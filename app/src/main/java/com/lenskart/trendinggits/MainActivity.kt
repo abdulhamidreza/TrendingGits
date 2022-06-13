@@ -1,8 +1,11 @@
 package com.lenskart.trendinggits
 
 import android.os.Bundle
-import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
+import androidx.core.widget.ContentLoadingProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,15 +22,19 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener 
 
     private lateinit var mViewModel: UserListViewModelKt
     private lateinit var userRecycler: RecyclerView
+    private lateinit var contentLoadingProgressBar: ContentLoadingProgressBar
+    private lateinit var retryBtn: AppCompatButton
     private lateinit var userAdapter: UserAdapter
-    private var userKtList: List<Repo> = ArrayList<Repo>()
+    private var userKtList: List<Repo> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        userRecycler = findViewById<RecyclerView>(R.id.recyclerview)
+        userRecycler = findViewById(R.id.recyclerview)
+        contentLoadingProgressBar = findViewById(R.id.loadProgressBar)
+        retryBtn = findViewById(R.id.retryBtn)
         userRecycler.layoutManager = LinearLayoutManager(this)
         userRecycler.setHasFixedSize(true)
 
@@ -37,11 +44,17 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener 
             UserListViewModelKt::class.java
         )
 
+        retryBtn.setOnClickListener {
+            retryBtn.visibility = View.GONE
+            loadUserList()
+        }
+
         loadUserList()
 
     }
 
     private fun loadUserList() {
+        contentLoadingProgressBar.visibility = View.VISIBLE
         mViewModel.userKtList.observe(this,
             Observer { userListSet: List<Repo> ->
                 userAdapter =
@@ -50,21 +63,18 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener 
                 userRecycler.setAdapter(userAdapter)
                 userAdapter.notifyDataSetChanged()
             })
-        mViewModel.errorMessage.observe(this,
-            Observer { it: String? ->
-                Log.e(
-                    "********** getErrorMessage",
-                    it!!
-                )
-            })
-        mViewModel.loadingStatus.observe(this, Observer { it: Boolean ->
-            Log.e("********** getLoading", "is Loading $it")
-            if (it) {
-                //     contentLoadingProgressBar.setVisibility(View.GONE)
-            } else {
-                //   contentLoadingProgressBar.setBackgroundColor(resources.getColor(android.R.color.system_accent1_10))
+        mViewModel.errorMessage.observe(
+            this
+        ) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
+        mViewModel.loadingStatus.observe(this) {
+            contentLoadingProgressBar.visibility = View.GONE
+            if (!it) {
+                retryBtn.visibility = View.GONE
+
             }
-        })
+        }
         mViewModel.intiUserList()
     }
 
