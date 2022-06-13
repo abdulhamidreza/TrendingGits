@@ -79,8 +79,10 @@
             android:layout_alignBottom="@+id/repoAvatar"
             android:text="1232"
             android:textSize="10dp"
+            android:drawableStart="@drawable/ic_baseline_star_rate_24"
             android:layout_marginLeft="20dp"
             android:textStyle="bold"
+            android:drawablePadding="3dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/repoAvatar"
             app:layout_constraintTop_toBottomOf="@+id/repoLinkTxt" />
@@ -94,6 +96,8 @@
             android:text="4332"
             android:textSize="10dp"
             android:textStyle="bold"
+            android:drawablePadding="3dp"
+            android:drawableStart="@drawable/ic_git_fork_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/repoStarTxt"
             app:layout_constraintTop_toBottomOf="@+id/repoLinkTxt" />
@@ -106,6 +110,8 @@
             android:layout_alignBottom="@+id/repoAvatar"
             android:text="4332"
             android:textColor="#10C329"
+            android:drawablePadding="3dp"
+            android:drawableStart="@drawable/ic_baseline_star_rate_24_green"
             android:textSize="10dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
