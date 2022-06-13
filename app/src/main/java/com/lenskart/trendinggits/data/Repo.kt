@@ -1,4 +1,4 @@
-package com.lenskart.trendinggits.repository
+package com.lenskart.trendinggits.data
 
 data class Repo(
     var repoName:String,

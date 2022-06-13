@@ -3,7 +3,7 @@ package com.lenskart.trendinggits.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.lenskart.trendinggits.repository.Repo
+import com.lenskart.trendinggits.data.Repo
 import com.lenskart.trendinggits.repository.UserRepositoryKt
 import kotlinx.coroutines.*
 import org.jsoup.Jsoup
@@ -50,7 +50,7 @@ class UserListViewModelKt constructor(private val mainRepository: UserRepository
                             rep.getElementsByClass("d-inline-block ml-0 mr-3").text(),
                             rep.getElementsByClass("d-inline-block float-sm-right").text(),
                             rep.getElementsByClass("Link--muted d-inline-block mr-3")[0].text(),
-                            rep.getElementsByClass("Link--muted d-inline-block mr-3")[0].text()
+                            rep.getElementsByClass("Link--muted d-inline-block mr-3")[1].text()
                         )
                     )
                 }

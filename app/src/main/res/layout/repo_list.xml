@@ -21,9 +21,9 @@
             android:id="@+id/repoAvatar"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginRight="8dp"
             android:padding="5dp"
             android:src="@drawable/ic_launcher_foreground"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,7 +43,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/repoAvatar"
-            app:layout_constraintTop_toTopOf="@+id/repoAvatar" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/repoLinkTxt"
@@ -79,6 +79,7 @@
             android:layout_alignBottom="@+id/repoAvatar"
             android:text="1232"
             android:textSize="10dp"
+            android:layout_marginLeft="20dp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/repoAvatar"
