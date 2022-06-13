@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp"
+    app:cardMaxElevation="10dp"
+    app:cardPreventCornerOverlap="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
+
+        <!--ImageVIew to display our Course Image-->
+        <ImageView
+            android:id="@+id/repoAvatar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginRight="8dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_launcher_foreground"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--Text View to display Course Name-->
+
+        <TextView
+            android:id="@+id/repoNameTxt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/repoAvatar"
+            android:maxLines="2"
+            android:padding="2dp"
+            android:text="Repo name"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/repoAvatar"
+            app:layout_constraintTop_toTopOf="@+id/repoAvatar" />
+
+        <TextView
+            android:id="@+id/repoLinkTxt"
+            android:layout_width="267dp"
+            android:layout_height="23dp"
+            android:layout_below="@id/repoNameTxt"
+            android:layout_toEndOf="@id/repoAvatar"
+            android:paddingStart="5dp"
+            android:text="Repo / link"
+            android:textColor="#3FCED3"
+            app:layout_constraintStart_toStartOf="@+id/repoNameTxt"
+            app:layout_constraintTop_toBottomOf="@+id/repoNameTxt" />
+
+        <TextView
+            android:id="@+id/repoLangTxt"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/repoLinkTxt"
+            android:layout_alignBottom="@+id/repoAvatar"
+            android:paddingStart="5dp"
+            android:text="Language"
+            android:textColor="#E89F34"
+            android:textSize="10dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/repoAvatar"
+            app:layout_constraintTop_toBottomOf="@+id/repoLinkTxt" />
+
+        <TextView
+            android:id="@+id/repoStarTxt"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/repoLinkTxt"
+            android:layout_alignBottom="@+id/repoAvatar"
+            android:text="1232"
+            android:textSize="10dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/repoAvatar"
+            app:layout_constraintTop_toBottomOf="@+id/repoLinkTxt" />
+
+        <TextView
+            android:id="@+id/repoForkCountTxt"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/repoLinkTxt"
+            android:layout_alignBottom="@+id/repoAvatar"
+            android:text="4332"
+            android:textSize="10dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/repoStarTxt"
+            app:layout_constraintTop_toBottomOf="@+id/repoLinkTxt" />
+
+        <TextView
+            android:id="@+id/todayRepoStarTxt"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/repoLinkTxt"
+            android:layout_alignBottom="@+id/repoAvatar"
+            android:text="4332"
+            android:textColor="#10C329"
+            android:textSize="10dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/repoStarTxt" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
