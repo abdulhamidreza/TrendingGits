@@ -70,9 +70,10 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener 
         }
         mViewModel.loadingStatus.observe(this) {
             contentLoadingProgressBar.visibility = View.GONE
-            if (!it) {
+            if (it) {
                 retryBtn.visibility = View.GONE
-
+            }else{
+                retryBtn.visibility = View.VISIBLE
             }
         }
         mViewModel.intiUserList()
