@@ -11,6 +11,7 @@ import retrofit2.Response
 class UserListViewModelKt constructor(private val mainRepository: UserRepositoryKt) : ViewModel() {
     val errorMessage = MutableLiveData<String>()
     val userKtList = MutableLiveData<List<Repo>>()
+    val lastSearchedKey = MutableLiveData<String>()
     val loadingStatus = MutableLiveData<Boolean>()
     private var isListInitlized = false
 
@@ -24,6 +25,10 @@ class UserListViewModelKt constructor(private val mainRepository: UserRepository
         if (!isListInitlized) {
             getTrendingRepo()
         }
+    }
+
+    fun getLastSearched(): String? {
+        return lastSearchedKey.value
     }
 
     private fun getTrendingRepo() {
@@ -41,6 +46,7 @@ class UserListViewModelKt constructor(private val mainRepository: UserRepository
                     for (rep in allInfoList) {
                         users.add(
                             Repo(
+                                users.size,
                                 rep.getElementsByClass("col-9 color-fg-muted my-1 pr-4").text(),
                                 rep.getElementsByClass("h3 lh-condensed").text().toString().replace(" ", ""),
                                 rep.getElementsByClass("text-normal").text().toString().replace(" /",""),

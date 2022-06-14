@@ -13,22 +13,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lenskart.trendinggits.data.Repo
-import com.lenskart.trendinggits.data.UserAdapter
+import com.lenskart.trendinggits.data.RepoAdapter
 import com.lenskart.trendinggits.network.RetrofitServiceKt
 import com.lenskart.trendinggits.repository.UserRepositoryKt
 import com.lenskart.trendinggits.viewmodel.MyViewModelFactory
 import com.lenskart.trendinggits.viewmodel.UserListViewModelKt
 import java.util.*
 
-class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener {
+class MainActivity : AppCompatActivity(), RepoAdapter.OnUserItemClickedListener {
 
 
     private lateinit var mViewModel: UserListViewModelKt
     private lateinit var userRecycler: RecyclerView
     private lateinit var contentLoadingProgressBar: ContentLoadingProgressBar
     private lateinit var retryBtn: AppCompatButton
-    private lateinit var userAdapter: UserAdapter
-    private var userKtList: List<Repo> = ArrayList()
+    private lateinit var repoAdapter: RepoAdapter
+    private var repoList: List<Repo> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,11 +60,14 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener 
         contentLoadingProgressBar.visibility = View.VISIBLE
         mViewModel.userKtList.observe(this,
             Observer { userListSet: List<Repo> ->
-                userAdapter =
-                    UserAdapter(userListSet as ArrayList<Repo>?, this)
-                userKtList = userListSet
-                userRecycler.setAdapter(userAdapter)
-                userAdapter.notifyDataSetChanged()
+                repoAdapter =
+                    RepoAdapter(
+                        userListSet as ArrayList<Repo>?,
+                        this
+                    )
+                repoList = userListSet
+                userRecycler.setAdapter(repoAdapter)
+                repoAdapter.filter.filter(mViewModel.getLastSearched())
             })
         mViewModel.errorMessage.observe(
             this
@@ -83,7 +86,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener 
     }
 
     override fun onUserItemClicked(position: Int) {
-        Toast.makeText(this, userKtList.get(position).repoName, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, repoList[position].repoName, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -92,12 +95,20 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener 
         val search = menu?.findItem(R.id.nav_search)
         val searchView = search?.actionView as SearchView
         searchView.queryHint = "Type.."
+
+        val lastSearchKey = mViewModel.getLastSearched()
+        if (lastSearchKey != null && lastSearchKey.isNotEmpty()) {
+            searchView.setQuery(lastSearchKey, false)
+        }
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
+
             override fun onQueryTextChange(newText: String?): Boolean {
-                userAdapter.filter.filter(newText)
+                repoAdapter.filter.filter(newText)
+                mViewModel.lastSearchedKey.postValue(newText)
                 return true
             }
         })

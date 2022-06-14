@@ -8,8 +8,10 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -18,14 +20,14 @@ import com.lenskart.trendinggits.R;
 
 import java.util.ArrayList;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> implements AdapterView.OnItemClickListener , Filterable {
-    private ArrayList<Repo> dataSet;
+public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.ViewHolder> implements AdapterView.OnItemClickListener, Filterable {
+    private final ArrayList<Repo> dataSet = new ArrayList<>();
     private ArrayList<Repo> repoOriginalFullList;
     private OnUserItemClickedListener mOnUserItemClickedListener;
 
-    public UserAdapter(ArrayList<Repo> mUserList, OnUserItemClickedListener onUserItemClickedListener) {
-        this.dataSet = mUserList;
-        repoOriginalFullList = new ArrayList<>(mUserList);
+    public RepoAdapter(ArrayList<Repo> mUserList, OnUserItemClickedListener onUserItemClickedListener) {
+        this.dataSet.addAll(mUserList);
+        repoOriginalFullList = mUserList;
         this.mOnUserItemClickedListener = onUserItemClickedListener;
     }
 
@@ -58,10 +60,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
 
     @Override
     public int getItemCount() {
-        if (dataSet != null) {
-            return dataSet.size();
-        } else
-            return 0;
+        return dataSet.size();
     }
 
     @Override
@@ -101,12 +100,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
 
         @Override
         public void onClick(View view) {
-            onUserItemClickedListener.onUserItemClicked(getAdapterPosition());
+            onUserItemClickedListener.onUserItemClicked(repoOriginalFullList.indexOf(dataSet.get(getAbsoluteAdapterPosition())));
         }
     }
 
     public interface OnUserItemClickedListener {
-        void onUserItemClicked(int position);
+        void onUserItemClicked(int itemId);
     }
 
 
@@ -128,6 +127,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
             results.values = filteredList;
             return results;
         }
+
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             dataSet.clear();
