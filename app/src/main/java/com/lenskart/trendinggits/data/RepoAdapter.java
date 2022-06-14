@@ -108,7 +108,6 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.ViewHolder> im
 
         @Override
         public void onClick(View view) {
-
             if(dataSet.get(getAbsoluteAdapterPosition()).isSelected()) {
                 cardViewItem.setCardBackgroundColor(Color.WHITE);
                 dataSet.get(getAbsoluteAdapterPosition()).setSelected(false);
@@ -116,6 +115,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.ViewHolder> im
                 cardViewItem.setCardBackgroundColor(Color.GRAY);
                 dataSet.get(getAbsoluteAdapterPosition()).setSelected(true);
             }
+            onUserItemClickedListener.onUserItemClicked(repoOriginalFullList.indexOf(dataSet.get(getAbsoluteAdapterPosition())));
 
         }
     }
