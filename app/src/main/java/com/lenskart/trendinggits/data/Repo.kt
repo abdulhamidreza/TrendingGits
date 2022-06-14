@@ -9,4 +9,5 @@ data class Repo(
     var todayStars: String,
     var totalStars: String,
     var totalForks: String,
+    var isSelected: Boolean
 )

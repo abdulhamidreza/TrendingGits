@@ -1,5 +1,6 @@
 package com.lenskart.trendinggits.data;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -55,7 +57,11 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.ViewHolder> im
         holder.repoForkCountTxt.setText(dataSet.get(position).getTotalForks());
         holder.repoStarTxt.setText(dataSet.get(position).getTotalStars());
         holder.todayRepoStarTxt.setText(dataSet.get(position).getTodayStars());
-
+        if (dataSet.get(position).isSelected()) {
+            holder.cardViewItem.setCardBackgroundColor(Color.GRAY);
+        } else {
+            holder.cardViewItem.setCardBackgroundColor(Color.WHITE);
+        }
     }
 
     @Override
@@ -76,6 +82,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.ViewHolder> im
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View view;
         TextView repoNameTxt;
+        CardView cardViewItem;
         ImageView repoAvatarImg;
         TextView repoLinkTxt;
         TextView repoLangTxt;
@@ -87,6 +94,7 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.ViewHolder> im
         public ViewHolder(@NonNull View itemView, OnUserItemClickedListener onUserItemClickedListener) {
             super(itemView);
             view = itemView;
+            cardViewItem = view.findViewById(R.id.cardViewItem);
             repoNameTxt = view.findViewById(R.id.repoNameTxt);
             repoAvatarImg = view.findViewById(R.id.repoAvatar);
             repoLinkTxt = view.findViewById(R.id.repoLinkTxt);
@@ -100,7 +108,15 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.ViewHolder> im
 
         @Override
         public void onClick(View view) {
-            onUserItemClickedListener.onUserItemClicked(repoOriginalFullList.indexOf(dataSet.get(getAbsoluteAdapterPosition())));
+
+            if(dataSet.get(getAbsoluteAdapterPosition()).isSelected()) {
+                cardViewItem.setCardBackgroundColor(Color.WHITE);
+                dataSet.get(getAbsoluteAdapterPosition()).setSelected(false);
+            }else {
+                cardViewItem.setCardBackgroundColor(Color.GRAY);
+                dataSet.get(getAbsoluteAdapterPosition()).setSelected(true);
+            }
+
         }
     }
 

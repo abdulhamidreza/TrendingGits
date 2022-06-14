@@ -53,7 +53,8 @@ class UserListViewModelKt constructor(private val mainRepository: UserRepository
                                 rep.getElementsByClass("d-inline-block ml-0 mr-3").text(),
                                 rep.getElementsByClass("d-inline-block float-sm-right").text(),
                                 rep.getElementsByClass("Link--muted d-inline-block mr-3")[0].text(),
-                                rep.getElementsByClass("Link--muted d-inline-block mr-3")[1].text()
+                                rep.getElementsByClass("Link--muted d-inline-block mr-3")[1].text(),
+                                false
                             )
                         )
                     }

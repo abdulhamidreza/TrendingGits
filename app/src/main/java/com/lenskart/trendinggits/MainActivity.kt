@@ -86,7 +86,8 @@ class MainActivity : AppCompatActivity(), RepoAdapter.OnUserItemClickedListener 
     }
 
     override fun onUserItemClicked(position: Int) {
-        Toast.makeText(this, repoList[position].repoName, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, repoList.get(position).repoName, Toast.LENGTH_SHORT).show()
+        repoList[position].isSelected = !repoList[position].isSelected
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
