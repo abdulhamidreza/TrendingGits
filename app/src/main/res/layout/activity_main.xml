@@ -16,6 +16,19 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/repo_list" />
 
+    <TextView
+        android:id="@+id/noResultTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Result"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/loadProgressBar"
         style="?android:attr/progressBarStyle"

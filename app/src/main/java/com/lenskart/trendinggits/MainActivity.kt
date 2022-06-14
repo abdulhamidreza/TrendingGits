@@ -1,21 +1,24 @@
 package com.lenskart.trendinggits
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.SearchView
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lenskart.trendinggits.network.RetrofitServiceKt
 import com.lenskart.trendinggits.data.Repo
 import com.lenskart.trendinggits.data.UserAdapter
+import com.lenskart.trendinggits.network.RetrofitServiceKt
 import com.lenskart.trendinggits.repository.UserRepositoryKt
 import com.lenskart.trendinggits.viewmodel.MyViewModelFactory
 import com.lenskart.trendinggits.viewmodel.UserListViewModelKt
+import java.util.*
 
 class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener {
 
@@ -58,7 +61,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener 
         mViewModel.userKtList.observe(this,
             Observer { userListSet: List<Repo> ->
                 userAdapter =
-                    UserAdapter(userListSet, this)
+                    UserAdapter(userListSet as ArrayList<Repo>?, this)
                 userKtList = userListSet
                 userRecycler.setAdapter(userAdapter)
                 userAdapter.notifyDataSetChanged()
@@ -72,7 +75,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener 
             contentLoadingProgressBar.visibility = View.GONE
             if (it) {
                 retryBtn.visibility = View.GONE
-            }else{
+            } else {
                 retryBtn.visibility = View.VISIBLE
             }
         }
@@ -80,7 +83,26 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserItemClickedListener 
     }
 
     override fun onUserItemClicked(position: Int) {
-        TODO("Not yet implemented")
+        Toast.makeText(this, userKtList.get(position).repoName, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.nav_menu, menu)
+
+        val search = menu?.findItem(R.id.nav_search)
+        val searchView = search?.actionView as SearchView
+        searchView.queryHint = "Type.."
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                userAdapter.filter.filter(newText)
+                return true
+            }
+        })
+
+        return true
     }
 
 

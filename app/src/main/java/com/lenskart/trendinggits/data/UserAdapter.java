@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -14,14 +16,16 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.lenskart.trendinggits.R;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> implements AdapterView.OnItemClickListener {
-    List<Repo> mUserList;
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> implements AdapterView.OnItemClickListener , Filterable {
+    private ArrayList<Repo> dataSet;
+    private ArrayList<Repo> repoOriginalFullList;
     private OnUserItemClickedListener mOnUserItemClickedListener;
 
-    public UserAdapter(List<Repo> mUserList, OnUserItemClickedListener onUserItemClickedListener) {
-        this.mUserList = mUserList;
+    public UserAdapter(ArrayList<Repo> mUserList, OnUserItemClickedListener onUserItemClickedListener) {
+        this.dataSet = mUserList;
+        repoOriginalFullList = new ArrayList<>(mUserList);
         this.mOnUserItemClickedListener = onUserItemClickedListener;
     }
 
@@ -38,24 +42,24 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
         requestOptions = requestOptions.transform(new CenterCrop(), new RoundedCorners(16));
 
         Glide.with(holder.view.getContext())
-                .load("https://github.com/" + mUserList.get(position).getOwnerAvatar() + ".png")
+                .load("https://github.com/" + dataSet.get(position).getOwnerAvatar() + ".png")
                 .centerCrop()
                 .apply(requestOptions)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.repoAvatarImg);
-        holder.repoNameTxt.setText(mUserList.get(position).getRepoName());
-        holder.repoLinkTxt.setText(mUserList.get(position).getRepoLink());
-        holder.repoLangTxt.setText(mUserList.get(position).getLanguage());
-        holder.repoForkCountTxt.setText(mUserList.get(position).getTotalForks());
-        holder.repoStarTxt.setText(mUserList.get(position).getTotalStars());
-        holder.todayRepoStarTxt.setText(mUserList.get(position).getTodayStars());
+        holder.repoNameTxt.setText(dataSet.get(position).getRepoName());
+        holder.repoLinkTxt.setText(dataSet.get(position).getRepoLink());
+        holder.repoLangTxt.setText(dataSet.get(position).getLanguage());
+        holder.repoForkCountTxt.setText(dataSet.get(position).getTotalForks());
+        holder.repoStarTxt.setText(dataSet.get(position).getTotalStars());
+        holder.todayRepoStarTxt.setText(dataSet.get(position).getTodayStars());
 
     }
 
     @Override
     public int getItemCount() {
-        if (mUserList != null) {
-            return mUserList.size();
+        if (dataSet != null) {
+            return dataSet.size();
         } else
             return 0;
     }
@@ -63,6 +67,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+    }
+
+    @Override
+    public Filter getFilter() {
+        return searchedFilter;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -99,4 +108,32 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
     public interface OnUserItemClickedListener {
         void onUserItemClicked(int position);
     }
+
+
+    private final Filter searchedFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            ArrayList<Repo> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(repoOriginalFullList);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (Repo item : repoOriginalFullList) {
+                    if (item.getRepoName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            dataSet.clear();
+            dataSet.addAll((ArrayList) results.values);
+            notifyDataSetChanged();
+        }
+    };
 }
+
