@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity(), RepoAdapter.OnUserItemClickedListener 
             Observer { userListSet: List<Repo> ->
                 repoAdapter =
                     RepoAdapter(
-                        userListSet as ArrayList<Repo>?,
+                        userListSet as ArrayList<Repo>,
                         this
                     )
                 repoList = userListSet
