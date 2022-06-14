@@ -4,12 +4,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -18,14 +18,12 @@ import com.lenskart.trendinggits.R;
 
 import java.util.ArrayList;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> implements AdapterView.OnItemClickListener , Filterable {
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> implements AdapterView.OnItemClickListener {
     private ArrayList<Repo> dataSet;
-    private ArrayList<Repo> repoOriginalFullList;
     private OnUserItemClickedListener mOnUserItemClickedListener;
 
     public UserAdapter(ArrayList<Repo> mUserList, OnUserItemClickedListener onUserItemClickedListener) {
         this.dataSet = mUserList;
-        repoOriginalFullList = new ArrayList<>(mUserList);
         this.mOnUserItemClickedListener = onUserItemClickedListener;
     }
 
@@ -69,10 +67,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
 
     }
 
-    @Override
-    public Filter getFilter() {
-        return searchedFilter;
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View view;
@@ -110,30 +104,5 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
     }
 
 
-    private final Filter searchedFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            ArrayList<Repo> filteredList = new ArrayList<>();
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(repoOriginalFullList);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-                for (Repo item : repoOriginalFullList) {
-                    if (item.getRepoName().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
-                    }
-                }
-            }
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-            return results;
-        }
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            dataSet.clear();
-            dataSet.addAll((ArrayList) results.values);
-            notifyDataSetChanged();
-        }
-    };
 }
 

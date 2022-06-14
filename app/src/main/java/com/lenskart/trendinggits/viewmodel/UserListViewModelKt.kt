@@ -10,7 +10,8 @@ import retrofit2.Response
 
 class UserListViewModelKt constructor(private val mainRepository: UserRepositoryKt) : ViewModel() {
     val errorMessage = MutableLiveData<String>()
-    val userKtList = MutableLiveData<List<Repo>>()
+  private var userKtList = ArrayList<Repo>()
+    val userKtListSearched = MutableLiveData<String>()
     val loadingStatus = MutableLiveData<Boolean>()
     private var isListInitlized = false
 
@@ -19,6 +20,10 @@ class UserListViewModelKt constructor(private val mainRepository: UserRepository
     }
 
     private var job: Job? = null
+
+    fun  getOriginalList(): ArrayList<Repo>{
+        return userKtList
+    }
 
     fun intiUserList() {
         if (!isListInitlized) {
@@ -30,7 +35,7 @@ class UserListViewModelKt constructor(private val mainRepository: UserRepository
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response: Response<String> = mainRepository.getAllUsers()
 
-            var users: MutableList<Repo> = ArrayList()
+            var users: ArrayList<Repo> = ArrayList()
             var isParsed = true
             var errorMassage = ""
             if (response.body() != null) {
@@ -41,9 +46,12 @@ class UserListViewModelKt constructor(private val mainRepository: UserRepository
                     for (rep in allInfoList) {
                         users.add(
                             Repo(
+                                users.size,
                                 rep.getElementsByClass("col-9 color-fg-muted my-1 pr-4").text(),
-                                rep.getElementsByClass("h3 lh-condensed").text().toString().replace(" ", ""),
-                                rep.getElementsByClass("text-normal").text().toString().replace(" /",""),
+                                rep.getElementsByClass("h3 lh-condensed").text().toString()
+                                    .replace(" ", ""),
+                                rep.getElementsByClass("text-normal").text().toString()
+                                    .replace(" /", ""),
                                 rep.getElementsByClass("d-inline-block ml-0 mr-3").text(),
                                 rep.getElementsByClass("d-inline-block float-sm-right").text(),
                                 rep.getElementsByClass("Link--muted d-inline-block mr-3")[0].text(),
@@ -61,7 +69,7 @@ class UserListViewModelKt constructor(private val mainRepository: UserRepository
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful and isParsed) {
                     isListInitlized = true;
-                    userKtList.postValue(users)
+                    userKtList = users
                     loadingStatus.postValue(true)
                 } else {
                     onError("Error : ${response.message()} " + "Parse error " + errorMassage)
@@ -79,4 +87,6 @@ class UserListViewModelKt constructor(private val mainRepository: UserRepository
         super.onCleared()
         job?.cancel()
     }
+
+
 }
