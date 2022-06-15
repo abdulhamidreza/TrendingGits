@@ -35,47 +35,63 @@ class UserListViewModelKt constructor(private val mainRepository: UserRepository
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response: Response<String> = mainRepository.getAllUsers()
 
-            var users: MutableList<Repo> = ArrayList()
-            var isParsed = true
-            var errorMassage = ""
-            if (response.body() != null) {
-                val doc = Jsoup.parse(response.body())
-                val allInfoList = doc.getElementsByClass("Box-row")
-
-                withContext(Dispatchers.Default) {
-                    for (rep in allInfoList) {
-                        users.add(
-                            Repo(
-                                users.size,
-                                rep.getElementsByClass("col-9 color-fg-muted my-1 pr-4").text(),
-                                rep.getElementsByClass("h3 lh-condensed").text().toString().replace(" ", ""),
-                                rep.getElementsByClass("text-normal").text().toString().replace(" /",""),
-                                rep.getElementsByClass("d-inline-block ml-0 mr-3").text(),
-                                rep.getElementsByClass("d-inline-block float-sm-right").text(),
-                                rep.getElementsByClass("Link--muted d-inline-block mr-3")[0].text(),
-                                rep.getElementsByClass("Link--muted d-inline-block mr-3")[1].text(),
-                                false
-                            )
-                        )
-                    }
-
-                }
-            } else {
-                isParsed = false
-                errorMassage = "Error : Body null "
-            }
-
+            val users: MutableList<Repo>
+            val usersDef = async { fetchHtmlElements(response) }
+            users = usersDef.await()
             withContext(Dispatchers.Main) {
-                if (response.isSuccessful and isParsed) {
+                if (response.isSuccessful && response.body() != null && users.isNotEmpty()) {
                     isListInitlized = true;
                     userKtList.postValue(users)
                     loadingStatus.postValue(true)
-                } else {
-                    onError("Error : ${response.message()} " + "Parse error " + errorMassage)
                 }
             }
         }
     }
+
+    private suspend fun fetchHtmlElements(response: Response<String>): MutableList<Repo> =
+        withContext(Dispatchers.Default) {
+            var users: MutableList<Repo> = ArrayList()
+            try {
+                if (!response.isSuccessful) {
+                    onError("Error : In Response  " + "fetchHtmlElements error")
+                    return@withContext users
+                }
+
+                if (response.body() == null) {
+                    onError("Error :  Body null " + "fetchHtmlElements error ")
+                    return@withContext users
+                }
+                val doc = Jsoup.parse(response.body())
+                val allInfoList = doc.getElementsByClass("Box-row")
+                for (rep in allInfoList) {
+                    users.add(
+                        Repo(
+                            users.size,
+                            rep.getElementsByClass("col-9 color-fg-muted my-1 pr-4").text(),
+                            rep.getElementsByClass("h3 lh-condensed").text().toString()
+                                .replace(" ", ""),
+                            rep.getElementsByClass("text-normal").text().toString()
+                                .replace(" /", ""),
+                            rep.getElementsByClass("d-inline-block ml-0 mr-3").text(),
+                            rep.getElementsByClass("d-inline-block float-sm-right").text(),
+                            rep.getElementsByClass("Link--muted d-inline-block mr-3")[0].text(),
+                            rep.getElementsByClass("Link--muted d-inline-block mr-3")[1].text(),
+                            false
+                        )
+                    )
+                }
+
+                if (users.isEmpty()) {
+                    onError("Error :  List is Empty " + "fetchHtmlElements error ")
+                    return@withContext users
+                }
+
+            } catch (e: Exception) {
+                onError("Error : ${e.message} " + "fetchHtmlElements error ")
+            }
+            users
+        }
+
 
     private fun onError(message: String) {
         errorMessage.postValue(message)
